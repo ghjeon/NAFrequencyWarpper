@@ -1,4 +1,4 @@
-package edu.skku.monet.NAFrequencyWarpper;
+package edu.skku.monet.NAFrequencyWarpper.Receiver;
 
 /**
  * Project IntelliJ IDEA
