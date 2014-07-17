@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.widget.LinearLayout;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.content.Context;
 import android.media.*;
 import android.os.Bundle;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import edu.skku.monet.NAFrequencyWarpper.Receiver.*;
 import edu.skku.monet.NAFrequencyWarpper.Sender.*;
 
 public class MyActivity extends Activity {
@@ -16,6 +21,10 @@ public class MyActivity extends Activity {
      * Called when the activity is first created.
      */
     private button serviceButton = null;
+    private receiveButton receiveButton = null;
+    private EditText txt = null;
+    public static boolean started = false;
+    private AudioListener aListener;
 
     class button extends Button {
         /* PlayButton의 기능 정의. Button 으로부터 상속받아 구현됨 */
@@ -36,12 +45,40 @@ public class MyActivity extends Activity {
         }
     }
 
+    class receiveButton extends Button {
+
+        OnClickListener clicker =  new OnClickListener() {
+            public void onClick(View v) {
+                receiveSignal();
+            }
+        };
+
+        public receiveButton(Context ctx) {
+            super(ctx);
+            setText("Receive Start");
+            setOnClickListener(clicker);
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LinearLayout ll = new LinearLayout(this); // 레이아웃 종류 선택
         serviceButton = new button(this);  // 레코드 버튼 객체 생성
+        receiveButton = new receiveButton(this);
+        txt = new EditText(this);
+        txt.setText("");
         ll.addView(serviceButton,
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0)); // 앞서 선안한 레이아웃에 버튼 추가함
+        ll.addView(receiveButton,
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0)); // 앞서 선안한 레이아웃에 버튼 추가함
+        ll.addView(txt,
                 new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -69,5 +106,21 @@ public class MyActivity extends Activity {
 
             }
         }
+    }
+
+    private void receiveSignal()
+    {
+        if(started)
+        {
+            started = false;
+            aListener.cancel(true);
+        }
+        else
+        {
+            started = true;
+            aListener = new AudioListener();
+            aListener.execute();
+        }
+
     }
 }
