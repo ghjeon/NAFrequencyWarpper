@@ -19,6 +19,8 @@ import android.util.Log;
  */
 public class AudioListener extends AsyncTask<Void, Void, Void>{
 
+    public FrequencyManager frequencyManager = new FrequencyManager();
+
     public static final int kFFTSIZE = 32768;
     public static final int kBUFFERSIZE = 32768;
     public static final int kSAMPLERATE = 44100;
@@ -70,7 +72,6 @@ public class AudioListener extends AsyncTask<Void, Void, Void>{
                 tmpr = fft.getRealPart();
                 publishProgress();
             }
-
             audioRecord.stop();
         }catch(Throwable t){
             Log.e("AudioRecord", "Recording Failed");
@@ -88,14 +89,26 @@ public class AudioListener extends AsyncTask<Void, Void, Void>{
             imag[i] = (double)tmpi[i];
             freq_db[i] = Math.sqrt((real[i]*real[i]) + (imag[i]*imag[i]));
         }
+
         addHarmonics();
 
         int max = frequencyIndex();
-        boolean checka = checkFreq(25, max);
-        boolean checkb = checkFreq(30, max);
-        Log.e("[checkA]", "RESULT :: " + checka);
-        Log.e("[checkB]", "RESULT :: " + checkb);
-        Log.e("[aListener]", "MAX:: " + frequencyIndex() + "Hz");
+        boolean checkA = checkFreq(25, max);
+        if(checkA)
+        {
+            frequencyManager.updateFrequency(0);
+            Log.e("[checkA]", "RESULT :: true");
+        }
+        boolean checkB = checkFreq(30, max);
+        if(checkB)
+        {
+            frequencyManager.updateFrequency(1);
+            Log.e("[checkB]", "RESULT :: true");
+        }
+        if(frequencyManager.validFrequency(0, 1))
+            Log.e("[checkAB]", "RESULT :: true");
+        //if(frequencyManager.validFrequency(0, 1))
+        //    Log.e("[checkAB]", "RESULT :: true");
     }
 
     protected void addHarmonics() {
@@ -138,14 +151,6 @@ public class AudioListener extends AsyncTask<Void, Void, Void>{
             }
         }
         return max_index;
-    }
-
-    protected boolean findCheckFrequency(int _check) {
-        double db = freq_db_mix[_check];
-        if(db > 500)
-            return true;
-        else
-            return false;
     }
 
     protected int frequencyIndex() {

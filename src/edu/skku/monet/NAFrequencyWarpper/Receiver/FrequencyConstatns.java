@@ -17,4 +17,7 @@ public class FrequencyConstatns {
     public static final int f18900 = 70;
 
     public static final int f19000 = 75;
+    public static final int f19100 = 80;
+    public static final int f19200 = 85;
+
 }

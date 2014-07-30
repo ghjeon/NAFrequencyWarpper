@@ -32,6 +32,4 @@ public class SCListener {
         cTransformer = new ComplexDoubleFFT(size/2);
     }
 
-
-
 }
