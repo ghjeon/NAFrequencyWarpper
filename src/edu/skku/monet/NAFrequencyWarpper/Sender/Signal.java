@@ -7,7 +7,7 @@ public class Signal {
     public double interval = 0.8;
     public int duration = 3;
     public int samplingRate = 44100;
-    public int numofSamples = 512;
+    public int numofSamples = 4096;
     public int frequency = FreqencyConstatns.SendAB[0];
     public double sample[] = new double[numofSamples];
 

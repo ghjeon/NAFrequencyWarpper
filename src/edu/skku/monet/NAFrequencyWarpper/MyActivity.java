@@ -101,7 +101,7 @@ public class MyActivity extends Activity {
             audioTrack.write(s.generatedSnd, 0, s.generatedSnd.length);
             audioTrack.play();
             try {
-                Thread.sleep(80);
+                Thread.sleep(150);
             }catch (Exception e) {
 
             }
